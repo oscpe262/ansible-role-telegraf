@@ -1,0 +1,4 @@
+## roles/ansible-role-telegraf/defaults/main.yml
+# vim:ft=yaml.ansible:
+---
+...
