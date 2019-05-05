@@ -1,8 +1,17 @@
 # Ansible role 'ansible-role-telegraf'
 
-An Ansible role for setting up something for whatever purpose.
+An Ansible role for setting up telegraf on monitored nodes.
+
+This role does not set up a backend, but relies on such to be set up already.
+
+It is assumed that the backend is an influxdb server. 
 
 ## Requirements
+- A target influxdb
+
+One of the following:
+- Fedora (Tested on 29+)
+- Raspbian
 
 ## Role Variables
 | Variable		| Default		| Comments (type) |

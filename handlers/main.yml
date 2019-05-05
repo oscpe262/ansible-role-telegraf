@@ -1,4 +1,9 @@
 ## roles/ansible-role-telegraf/handlers/main.yml
 # vim:ft=yaml.ansible:
 ---
+- name: "Restart Telegraf"
+  service:
+    name: telegraf
+    state: restarted
+    enabled: yes
 ...

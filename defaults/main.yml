@@ -1,4 +1,24 @@
 ## roles/ansible-role-telegraf/defaults/main.yml
 # vim:ft=yaml.ansible:
 ---
+telegraf_agent_package: telegraf
+
+# RedHat specific settings for convenience
+telegraf_redhat_releasever: "$releasever"
+
+telegraf_yum_baseurl:
+  amazon: "https://repos.influxdata.com/centos/6/$basearch/stable"
+  centos: "https://repos.influxdata.com/rhel/{{ telegraf_redhat_releasever }}/$basearch/stable"
+  default: "https://repos.influxdata.com/{{ ansible_distribution|lower }}/{{ telegraf_redhat_releasever }}/$basearch/stable"
+  redhat: "https://repos.influxdata.com/rhel/{{ telegraf_redhat_releasever }}/$basearch/stable"
+
+telegraf_db: "telegraf"
+telegraf_ispi: False
+
+# This is needed to be passed somewhere
+# telegraf_url: ""
+
+# These are needed if your influxdb requires authentication (highly recommended btw...) 
+# telegraf_username: ""
+# telegraf_password: ""
 ...

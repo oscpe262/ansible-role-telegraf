@@ -1,4 +1,61 @@
 ## roles/ansible-role-telegraf/tasks/main.yml
 # vim:ft=yaml.ansible:
 ---
+- name: Use RHEL 7 packages for Fedora
+  set_fact:
+    telegraf_redhat_releasever: 7
+  when:
+    - ansible_distribution == "Fedora"
+
+- name: "RedHat | Add yum repository"
+  yum_repository:
+    name: influxdb
+    description: InfluxDB Repository - RHEL $releasever
+    baseurl: "{{ telegraf_yum_baseurl[ansible_distribution|lower] | default(telegraf_yum_baseurl['default']) }}"
+    gpgcheck: yes
+    gpgkey: https://repos.influxdata.com/influxdb.key
+  when: "'RedHat' in ansible_os_family"
+
+- name: "RedHat | Install Telegraf package (yum)"
+  yum:
+    name: "{{ telegraf_agent_package }}"
+    state: present
+    update_cache: yes
+  notify: "Restart Telegraf"
+  when: "'yum' in ansible_pkg_mgr"
+
+- name: "RedHat | Install Telegraf package (dnf)"
+  yum:
+    name: "{{ telegraf_agent_package }}"
+    state: present
+    update_cache: yes
+  notify: "Restart Telegraf"
+  when: "'dnf' in ansible_pkg_mgr"
+
+- name: "Debian | Add apt key"
+  apt_key:
+    url: "https://repos.influxdata.com/influxdb.key"
+    state: present
+  when: "'Debian' in ansible_os_family"
+
+- name: "Debian | Add repository file"
+  template:
+    src: etc_apt_sources.list.d_influxdb.list.j2
+    dest: /etc/apt/sources.list.d/influxdb.list
+  when: "'Debian' in ansible_os_family"
+
+- name: "Debian | Install Telegraf package"
+  apt:
+    update_cache: yes
+    name: telegraf
+    state: present
+  notify: "Restart Telegraf"
+  when: "'Debian' in ansible_os_family"
+
+- name: "Any | Configure Telegraf"
+  template:
+    src: telegraf.conf.j2
+    dest: /etc/telegraf/telegraf.conf
+  notify: "Restart Telegraf"
+
 ...
