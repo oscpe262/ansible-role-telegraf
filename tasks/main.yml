@@ -10,24 +10,29 @@
 - name: "RedHat | Add yum repository"
   yum_repository:
     name: influxdb
-    description: InfluxDB Repository - RHEL $releasever
-    baseurl: "{{ telegraf_yum_baseurl[ansible_distribution|lower] | default(telegraf_yum_baseurl['default']) }}"
+    baseurl: "{{ telegraf_yum_baseurl[ansible_os_family|lower] | default(telegraf_yum_baseurl['default']) }}"
     gpgcheck: yes
+    enabled: yes
     gpgkey: https://repos.influxdata.com/influxdb.key
+    description: InfluxDB Repository - RHEL $releasever
+  when: "'RedHat' in ansible_os_family"
+
+- name: "RedHat | Refresh cache"
+  command: dnf clean all
   when: "'RedHat' in ansible_os_family"
 
 - name: "RedHat | Install Telegraf package (yum)"
   yum:
     name: "{{ telegraf_agent_package }}"
-    state: present
+    state: latest
     update_cache: yes
   notify: "Restart Telegraf"
   when: "'yum' in ansible_pkg_mgr"
 
 - name: "RedHat | Install Telegraf package (dnf)"
-  yum:
+  dnf:
     name: "{{ telegraf_agent_package }}"
-    state: present
+    state: latest
     update_cache: yes
   notify: "Restart Telegraf"
   when: "'dnf' in ansible_pkg_mgr"
@@ -47,7 +52,9 @@
 - name: "Debian | Install Telegraf package"
   apt:
     update_cache: yes
-    name: telegraf
+    name: 
+      - telegraf
+      - jq
     state: present
   notify: "Restart Telegraf"
   when: "'Debian' in ansible_os_family"
@@ -58,4 +65,10 @@
     dest: /etc/telegraf/telegraf.conf
   notify: "Restart Telegraf"
 
+- name: "Pihole | Install Pihole Stats"
+  copy:
+    src: piholestats.sh
+    dest: /opt/pihole/piholestats.sh
+    mode: 0755
+  when: telegraf_ispihole
 ...

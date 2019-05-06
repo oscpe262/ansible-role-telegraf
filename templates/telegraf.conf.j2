@@ -1454,6 +1454,7 @@
 
 {# Read metrics about disk IO by device #}
 [[inputs.diskio]]
+
 {#
   ## By default, telegraf will gather stats for all devices including
   ## disk partitions.
@@ -2090,6 +2091,14 @@
   name_override = "gpu_temperature"
   data_format = "grok"
   grok_patterns = ["%{NUMBER:value:float}"]
+{% endif %}
+
+{% if telegraf_ispihole%}
+[[inputs.exec]]
+  commands = [ "/opt/pihole/piholestats.sh" ]
+  timeout = "10s"
+  data_format = "json"
+  name_suffix = "_pihole"
 {% endif %}
 
 {#

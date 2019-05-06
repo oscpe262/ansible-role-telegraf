@@ -14,6 +14,7 @@ telegraf_yum_baseurl:
 
 telegraf_db: "telegraf"
 telegraf_ispi: False
+telegraf_ispihole: False
 
 # This is needed to be passed somewhere
 # telegraf_url: ""
