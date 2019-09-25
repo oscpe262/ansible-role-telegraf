@@ -4,8 +4,8 @@
 - name: Use RHEL 7 packages for Fedora
   set_fact:
     telegraf_redhat_releasever: 7
-  when:
-    - ansible_distribution == "Fedora"
+  when: 
+    - "(ansible_distribution == 'Fedora') or (ansible_distribution == 'RedHat')" 
 
 - name: "RedHat | Add yum repository"
   yum_repository:
@@ -17,9 +17,17 @@
     description: InfluxDB Repository - RHEL $releasever
   when: "'RedHat' in ansible_os_family"
 
-- name: "RedHat | Refresh cache"
+- name: "RedHat | Refresh cache (dnf)"
   command: dnf clean all
-  when: "'RedHat' in ansible_os_family"
+  args:
+    warn: false
+  when: "'dnf' in ansible_pkg_mgr"
+
+- name: "RedHat | Refresh cache (yum)"
+  command: yum clean all
+  args:
+    warn: false
+  when: "'yum' in ansible_pkg_mgr"
 
 - name: "RedHat | Install Telegraf package (yum)"
   yum:
@@ -60,15 +68,25 @@
   when: "'Debian' in ansible_os_family"
 
 - name: "Any | Configure Telegraf"
+  tags: teleconf
   template:
     src: telegraf.conf.j2
     dest: /etc/telegraf/telegraf.conf
   notify: "Restart Telegraf"
 
 - name: "Pihole | Install Pihole Stats"
+  tags: teleconf
   copy:
     src: piholestats.sh
     dest: /opt/pihole/piholestats.sh
     mode: 0755
   when: telegraf_ispihole
+
+- name: "Local IP script"
+  tags: teleconf
+  template:
+    src: localip.sh.j2
+    dest: /opt/localip.sh
+    mode: 0755
+  when: not telegraf_externalip
 ...

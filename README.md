@@ -11,6 +11,8 @@ It is assumed that the backend is an influxdb server.
 
 One of the following:
 - Fedora (Tested on 29+)
+- RHEL 7+
+- CentOS 7+
 - Raspbian
 
 ## Role Variables
