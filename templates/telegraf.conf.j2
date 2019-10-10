@@ -31,7 +31,7 @@
 [agent]
 {#  ## Default data collection interval for all inputs #}
   interval = "10s"
-{#  ## Rounds collection interval to 'interval' 
+{#  ## Rounds collection interval to 'interval'
 ## ie, if interval="10s" then always collect on :00, :10, :20, etc. #}
   round_interval = true
 
@@ -1714,7 +1714,7 @@
 #   # files = ["memory.*usage*", "memory.limit_in_bytes"]
 
 #}
-{% if ( ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8' ) %}
+{% if 'chrony' in telegraf_ntp_service %}
 # Get standard chrony metrics, requires chronyc executable.
 [[inputs.chrony]]
 #   ## If true, chronyc tries to perform a DNS lookup for the time server.
@@ -3272,7 +3272,7 @@
 #   reverse_metric_names = true
 
 
-# # A plugin to collect stats from Opensmtpd - a validating, recursive, and caching DNS resolver 
+# # A plugin to collect stats from Opensmtpd - a validating, recursive, and caching DNS resolver
 # [[inputs.opensmtpd]]
 #   ## If running as a restricted user you can prepend sudo for additional access:
 #   #use_sudo = false

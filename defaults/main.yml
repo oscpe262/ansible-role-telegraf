@@ -16,10 +16,12 @@ telegraf_db: "telegraf"
 telegraf_ispi: False
 telegraf_ispihole: False
 
+telegraf_ntp_service: ntp
+
 # This is needed to be passed somewhere
 # telegraf_url: ""
 
-# These are needed if your influxdb requires authentication (highly recommended btw...) 
+# These are needed if your influxdb requires authentication (highly recommended btw...)
 # telegraf_username: ""
 # telegraf_password: ""
 ...
